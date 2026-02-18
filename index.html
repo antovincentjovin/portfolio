@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vincent</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#000;--fg:#fff;--fg-muted:#888;--fg-subtle:#555;--card-bg:#111;--card-border:#222;--nav-bg:rgba(0,0,0,0.72);--nav-border:rgba(255,255,255,0.08);--transition-smooth:0.6s cubic-bezier(0.16,1,0.3,1);--transition-fast:0.3s cubic-bezier(0.16,1,0.3,1)}
+[data-theme="light"]{--bg:#fff;--fg:#000;--fg-muted:#666;--fg-subtle:#999;--card-bg:#f5f5f5;--card-border:#e0e0e0;--nav-bg:rgba(255,255,255,0.72);--nav-border:rgba(0,0,0,0.08)}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--fg);transition:background var(--transition-fast),color var(--transition-fast);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.nav-wrapper{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:20px 40px;pointer-events:none;transition:padding var(--transition-smooth)}
+.nav-wrapper.scrolled{padding:12px 20px}
+.nav-inner{width:100%;display:flex;justify-content:flex-end}
+.navbar{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:50px;background:var(--nav-bg);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid var(--nav-border);box-shadow:0 4px 30px rgba(0,0,0,0.1);pointer-events:all;transition:padding var(--transition-smooth),transform var(--transition-smooth)}
+.nav-wrapper.scrolled .navbar{padding:10px 16px}
+.nav-link{padding:8px 20px;border-radius:50px;font-size:14px;font-weight:500;letter-spacing:0.02em;color:var(--fg-muted);cursor:pointer;transition:all var(--transition-fast);text-decoration:none;white-space:nowrap;position:relative}
+.nav-link:hover{color:var(--fg)}
+.nav-link.active{background:var(--fg);color:var(--bg)}
+.theme-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--nav-border);background:transparent;color:var(--fg-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition-fast);margin-left:4px;flex-shrink:0}
+.theme-toggle:hover{color:var(--fg);border-color:var(--fg-subtle)}
+.theme-toggle svg{width:16px;height:16px;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+.theme-toggle:hover svg{transform:rotate(30deg)}
+.page{display:none;min-height:100vh;opacity:0;transform:translateY(20px);transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1),transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+.page.active{display:block;opacity:1;transform:translateY(0)}
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden}
+.hero-name{font-size:clamp(60px,15vw,200px);font-weight:700;letter-spacing:-0.03em;line-height:0.9;text-transform:uppercase;opacity:0;transform:translateY(40px);animation:heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.2s forwards}
+.hero-tagline{margin-top:24px;text-align:center;opacity:0;transform:translateY(30px);animation:heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.5s forwards}
+.hero-tagline .line1{font-size:clamp(14px,2vw,20px);letter-spacing:0.25em;text-transform:uppercase;color:var(--fg-muted);font-weight:400}
+.hero-tagline .line2{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,48px);font-style:italic;font-weight:600;margin-top:8px}
+.hero-location{position:absolute;bottom:60px;right:60px;display:flex;align-items:center;gap:10px;opacity:0;animation:heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.8s forwards}
+.hero-location .loc-icon{color:#22c55e;flex-shrink:0}
+.hero-location .loc-icon svg{width:20px;height:20px}
+.hero-location .loc-text{font-size:12px;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;text-align:right;line-height:1.5}
+.hero-location .loc-sub{font-weight:400;color:var(--fg-muted);font-size:11px}
+@keyframes heroReveal{to{opacity:1;transform:translateY(0)}}
+.content-section{max-width:800px;margin:0 auto;padding:0 40px 120px}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.intro-text{font-size:clamp(16px,1.8vw,18px);line-height:1.8;color:var(--fg-muted);font-weight:300}
+.intro-text p+p{margin-top:28px}
+.hero-scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);opacity:0;animation:heroReveal 1s cubic-bezier(0.16,1,0.3,1) 1.2s forwards}
+.scroll-arrow{width:24px;height:24px;color:var(--fg-subtle);animation:scrollBounce 2s ease-in-out infinite}
+@keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.project-card{padding:60px 0;border-bottom:1px solid var(--card-border)}
+.project-card:last-child{border-bottom:none}
+.project-tag{display:inline-block;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--fg-subtle);font-weight:500;margin-bottom:16px;padding:6px 14px;border:1px solid var(--card-border);border-radius:50px}
+.project-tag.ongoing{border-color:var(--fg-subtle)}
+.project-title{font-size:clamp(22px,3vw,32px);font-weight:600;letter-spacing:-0.02em;margin-bottom:20px}
+.project-desc{font-size:16px;line-height:1.8;color:var(--fg-muted);font-weight:300;max-width:680px}
+.tech-stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.tech-pill{font-size:12px;padding:6px 14px;border-radius:50px;background:var(--card-bg);border:1px solid var(--card-border);color:var(--fg-muted);font-weight:400;letter-spacing:0.02em}
+.about-content{max-width:800px;margin:0 auto;padding:0 40px 80px}
+.about-text{font-size:clamp(16px,1.8vw,18px);line-height:1.8;color:var(--fg-muted);font-weight:300}
+.about-text p+p{margin-top:28px}
+.section-divider{width:100%;height:1px;background:var(--card-border);margin:60px 0}
+.section-label{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-subtle);font-weight:600;margin-bottom:32px}
+.education-list{display:flex;flex-direction:column;gap:24px}
+.edu-item{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:24px}
+.edu-item:last-child{padding-bottom:0}
+.edu-degree{font-size:15px;font-weight:500;margin-bottom:4px}
+.edu-school{font-size:14px;color:var(--fg-muted);font-weight:300}
+.edu-year{font-size:14px;color:var(--fg-subtle);font-weight:400;white-space:nowrap;margin-left:20px;flex-shrink:0}
+.experience-item{padding:0}
+.exp-role{font-size:15px;font-weight:500;margin-bottom:4px}
+.exp-company{font-size:14px;color:var(--fg-muted);font-weight:300}
+.exp-duration{font-size:13px;color:var(--fg-subtle);margin-top:4px}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.skill-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);transition:all var(--transition-fast)}
+.skill-card:hover{border-color:var(--fg-subtle);transform:translateY(-2px)}
+.skill-card i,.skill-card svg{font-size:28px;width:28px;height:28px;color:var(--fg-muted);transition:color var(--transition-fast)}
+.skill-card:hover i,.skill-card:hover svg{color:var(--fg)}
+.skill-card .skill-name{font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--fg-muted);text-align:center}
+.connect-links{display:flex;gap:48px;justify-content:center;align-items:center;padding:40px 0}
+.connect-item{display:flex;flex-direction:column;align-items:center;gap:14px;text-decoration:none;color:var(--fg-muted);transition:all var(--transition-fast);cursor:pointer}
+.connect-item:hover{color:var(--fg);transform:translateY(-4px)}
+.connect-icon{width:56px;height:56px;border-radius:16px;background:var(--card-bg);border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;transition:all var(--transition-fast)}
+.connect-item:hover .connect-icon{border-color:var(--fg-subtle)}
+.connect-icon svg{width:26px;height:26px}
+.connect-label{font-size:13px;font-weight:500;letter-spacing:0.05em}
+@media(max-width:768px){
+.nav-wrapper{padding:12px 16px}
+.nav-wrapper.scrolled{padding:10px 16px}
+.nav-link{padding:6px 14px;font-size:13px}
+.hero-location{bottom:40px;right:30px}
+.content-section,.about-content{padding:0 24px 80px}
+.skills-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.skill-card{padding:16px 8px}
+.connect-links{gap:32px}
+.edu-item{flex-direction:column;gap:4px}
+.edu-year{margin-left:0}
+}
+@media(max-width:480px){
+.hero-name{font-size:clamp(48px,18vw,120px)}
+.nav-link{padding:6px 10px;font-size:12px}
+.skills-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="nav-wrapper" id="navWrapper">
+<div class="nav-inner" id="navInner">
+<nav class="navbar" id="navbar">
+<a class="nav-link active" data-page="home">Home</a>
+<a class="nav-link" data-page="projects">Projects</a>
+<a class="nav-link" data-page="about">About</a>
+<a class="nav-link" data-page="connect">Connect</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+<svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+</nav>
+</div>
+</div>
+
+<div class="page active" id="page-home">
+<section class="hero">
+<div class="hero-name">Vincent</div>
+<div class="hero-tagline">
+<div class="line1">Engineering Resilient Solutions</div>
+<div class="line2">that actually matter.</div>
+</div>
+<div class="hero-location">
+<span class="loc-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg></span>
+<div>
+<div class="loc-text">Based in Tirunelveli,</div>
+<div class="loc-text loc-sub">India</div>
+</div>
+</div>
+<div class="hero-scroll-hint">
+<svg class="scroll-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+</div>
+</section>
+<div class="content-section">
+<div class="reveal">
+<div class="intro-text">
+<p>A recent MCA graduate with a sharp focus on computer networking and cybersecurity. I approach security not as a checklist but as a discipline. Understanding how systems communicate, where they break, and how to make them hold. My interest in these fields comes from genuine curiosity about infrastructure-level problems and the challenge of defending against threats that constantly evolve.</p>
+<p>I build complete software systems and apply machine learning where it adds real defensive value. Whether it's analyzing malware behavior through API call patterns or detecting anomalies across IoT networks, I work across the stack to deliver solutions that function under pressure. Committed to developing strong technical and analytical capabilities while contributing to security practices that are practical, resilient, and built to last.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="page" id="page-projects">
+<section class="hero">
+<div class="hero-name">Projects</div>
+<div class="hero-tagline">
+<div class="line1">Crafting Solutions</div>
+<div class="line2">with code &amp; curiosity.</div>
+</div>
+<div class="hero-scroll-hint">
+<svg class="scroll-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+</div>
+</section>
+<div class="content-section">
+<div class="project-card reveal">
+<span class="project-tag">College Project</span>
+<h3 class="project-title">Malware Detection Based on API Calls Using Machine Learning</h3>
+<p class="project-desc">A behavioral malware analysis system that monitors program runtime activity via Process Monitor, extracts API call sequences, and applies TF-IDF vectorization to convert behavioral patterns into numerical feature vectors. These vectors are classified using LightGBM to determine whether a program exhibits malicious behavior. Unlike traditional signature-based antivirus solutions, this approach detects unknown and zero-day threats by analyzing what a program does at runtime rather than matching it against known signatures.</p>
+<div class="tech-stack">
+<span class="tech-pill">Python</span>
+<span class="tech-pill">Scikit-learn</span>
+<span class="tech-pill">LightGBM</span>
+<span class="tech-pill">TF-IDF</span>
+<span class="tech-pill">Tkinter</span>
+</div>
+</div>
+<div class="project-card reveal">
+<span class="project-tag">Personal Project</span>
+<h3 class="project-title">Object Recogniser</h3>
+<p class="project-desc">A real-time object recognition system built on a pre-trained YOLO model. The model was configured to interface with the device camera, process live video frames, identify objects within the frame, and display annotated output in real time. The focus of this project was on integration and deployment of the pre-built model rather than training from scratch. Suitable for CCTV and security surveillance applications where automated visual identification is required.</p>
+<div class="tech-stack">
+<span class="tech-pill">Python</span>
+<span class="tech-pill">YOLO</span>
+<span class="tech-pill">OpenCV</span>
+</div>
+</div>
+<div class="project-card reveal">
+<span class="project-tag ongoing">Ongoing &middot; College Project</span>
+<h3 class="project-title">Threat Intelligence in IoT Networks</h3>
+<p class="project-desc">An AI-powered threat detection platform designed for IoT network environments. The system uses a Raspberry Pi as an edge controller with ESP32 sensor endpoints, collecting and forwarding network traffic data for anomaly detection using an Isolation Forest algorithm. A custom SIEM-like monitoring dashboard provides real-time alert management, traffic analysis, device health monitoring, and configurable threat thresholds. Currently in active development.</p>
+<div class="tech-stack">
+<span class="tech-pill">Python</span>
+<span class="tech-pill">FastAPI</span>
+<span class="tech-pill">React</span>
+<span class="tech-pill">Raspberry Pi</span>
+<span class="tech-pill">ESP32</span>
+<span class="tech-pill">Isolation Forest</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="page" id="page-about">
+<section class="hero">
+<div class="hero-name">About Me</div>
+<div class="hero-tagline">
+<div class="line1">Get to know more about</div>
+<div class="line2">who I am.</div>
+</div>
+<div class="hero-scroll-hint">
+<svg class="scroll-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+</div>
+</section>
+<div class="about-content">
+<div class="reveal">
+<div class="about-text">
+<p>I'm Vincent, a recent MCA graduate. My academic work has been driven by one consistent question: how do you protect systems that are becoming more connected, more distributed, and more exposed every year? That question led me to work with edge devices, network traffic analysis, and behavioral threat detection, areas where theory meets real operational risk.</p>
+<p>On the technical side, I've built complete software systems and trained classification models on process-level telemetry. I've developed SIEM-like monitoring dashboards and configured real-time object detection pipelines for security applications. I'm comfortable working across Python, SQL, Bash, and PowerShell, and I approach projects with a full-picture understanding of how each component serves the larger system.</p>
+<p>What drives me is simple. I want to work on problems that matter, in environments where the work has consequences. Cybersecurity and networking are where I've invested the most depth, but I pick up whatever a problem demands. I'm not limited to what I already know; I'm limited by what I haven't encountered yet. Focused on building advanced technical and analytical skills while contributing to security practices that are effective, resilient, and designed for the real world.</p>
+</div>
+</div>
+<div class="section-divider reveal"></div>
+<div class="reveal">
+<div class="section-label">Education</div>
+<div class="education-list">
+<div class="edu-item">
+<div>
+<div class="edu-degree">SSLC</div>
+<div class="edu-school">Annai Velankanni Matric Hr. Sec. School, Pavoorchatram</div>
+</div>
+<div class="edu-year">2019</div>
+</div>
+<div class="edu-item">
+<div>
+<div class="edu-degree">HSC</div>
+<div class="edu-school">Annai Velankanni Matric Hr. Sec. School, Pavoorchatram</div>
+</div>
+<div class="edu-year">2021</div>
+</div>
+<div class="edu-item">
+<div>
+<div class="edu-degree">Bachelor of Computer Science</div>
+<div class="edu-school">St. Joseph College of Arts and Science, Veikalipatty</div>
+</div>
+<div class="edu-year">2021-2024</div>
+</div>
+<div class="edu-item">
+<div>
+<div class="edu-degree">Master of Computer Applications</div>
+<div class="edu-school">Francis Xavier Engineering College, Tirunelveli</div>
+</div>
+<div class="edu-year">2024-2026</div>
+</div>
+</div>
+</div>
+<div class="section-divider reveal"></div>
+<div class="reveal">
+<div class="section-label">Experience</div>
+<div class="experience-item">
+<div class="exp-role">Data Analyst Intern</div>
+<div class="exp-company">Vettri IT Systems, Surandai, Tamil Nadu</div>
+<div class="exp-duration">1 Month</div>
+</div>
+</div>
+<div class="section-divider reveal"></div>
+<div class="reveal">
+<div class="section-label">Skills</div>
+<div class="skills-grid">
+<div class="skill-card">
+<i class="devicon-c-plain"></i>
+<span class="skill-name">C</span>
+</div>
+<div class="skill-card">
+<i class="devicon-python-plain"></i>
+<span class="skill-name">Python</span>
+</div>
+<div class="skill-card">
+<i class="devicon-mysql-plain"></i>
+<span class="skill-name">SQL</span>
+</div>
+<div class="skill-card">
+<i class="devicon-html5-plain"></i>
+<span class="skill-name">HTML</span>
+</div>
+<div class="skill-card">
+<i class="devicon-css3-plain"></i>
+<span class="skill-name">CSS</span>
+</div>
+<div class="skill-card">
+<i class="devicon-javascript-plain"></i>
+<span class="skill-name">JavaScript</span>
+</div>
+<div class="skill-card">
+<i class="devicon-powershell-plain"></i>
+<span class="skill-name">PowerShell</span>
+</div>
+<div class="skill-card">
+<i class="devicon-bash-plain"></i>
+<span class="skill-name">Bash</span>
+</div>
+<div class="skill-card">
+<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5-3.6-1.14-7-5.67-7-10.5V6.3l7-3.12z"/><path d="M12 6.5l-4 1.78v3.22c0 3.07 2.13 5.95 4 6.72 1.87-.77 4-3.65 4-6.72V8.28L12 6.5z"/></svg>
+<span class="skill-name">Cybersecurity</span>
+</div>
+<div class="skill-card">
+<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><circle cx="18" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8.5" y1="12" x2="15.5" y2="6" stroke="currentColor" stroke-width="1.5"/><line x1="8.5" y1="12" x2="15.5" y2="18" stroke="currentColor" stroke-width="1.5"/></svg>
+<span class="skill-name">Networking</span>
+</div>
+<div class="skill-card">
+<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 3.5C7 6 6 9 6 12s1 6 3 8.5M15 3.5c2 2.5 3 5.5 3 8.5s-1 6-3 8.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+<span class="skill-name">Machine Learning</span>
+</div>
+<div class="skill-card">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="2" y="14" width="6" height="6" rx="1"/><rect x="9" y="14" width="6" height="6" rx="1"/><rect x="16" y="14" width="6" height="6" rx="1"/><rect x="9" y="4" width="6" height="6" rx="1"/><line x1="12" y1="10" x2="12" y2="14"/><line x1="5" y1="14" x2="5" y2="12"/><line x1="19" y1="14" x2="19" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+<span class="skill-name">IoT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="page" id="page-connect">
+<section class="hero">
+<div class="hero-name">Connect</div>
+<div class="hero-tagline">
+<div class="line1">Let's work together</div>
+<div class="line2">get in touch.</div>
+</div>
+<div class="hero-scroll-hint">
+<svg class="scroll-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+</div>
+</section>
+<div class="content-section">
+<div class="reveal">
+<div class="connect-links">
+<a class="connect-item" href="https://www.linkedin.com/in/anto-vincent-jovin-7947a53b1" target="_blank" rel="noopener noreferrer">
+<div class="connect-icon">
+<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+</div>
+<span class="connect-label">LinkedIn</span>
+</a>
+<a class="connect-item" href="mailto:antovincent7274@gmail.com" rel="noopener noreferrer">
+<div class="connect-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+</div>
+<span class="connect-label">Email</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const navWrapper=document.getElementById('navWrapper');
+const navLinks=document.querySelectorAll('.nav-link');
+const pages=document.querySelectorAll('.page');
+const themeToggle=document.getElementById('themeToggle');
+const sunIcon=document.getElementById('sunIcon');
+const moonIcon=document.getElementById('moonIcon');
+const html=document.documentElement;
+
+let currentPage='home';
+
+function switchPage(pageId){
+if(pageId===currentPage)return;
+const outgoing=document.getElementById('page-'+currentPage);
+const incoming=document.getElementById('page-'+pageId);
+outgoing.style.opacity='0';
+outgoing.style.transform='translateY(20px)';
+setTimeout(()=>{
+outgoing.classList.remove('active');
+outgoing.style.display='none';
+incoming.style.display='block';
+incoming.style.opacity='0';
+incoming.style.transform='translateY(20px)';
+window.scrollTo({top:0,behavior:'instant'});
+requestAnimationFrame(()=>{
+incoming.classList.add('active');
+requestAnimationFrame(()=>{
+incoming.style.opacity='1';
+incoming.style.transform='translateY(0)';
+resetRevealElements(incoming);
+checkScroll();
+});
+});
+currentPage=pageId;
+navLinks.forEach(l=>{
+l.classList.toggle('active',l.dataset.page===pageId);
+});
+},300);
+}
+
+navLinks.forEach(link=>{
+link.addEventListener('click',(e)=>{
+e.preventDefault();
+switchPage(link.dataset.page);
+});
+});
+
+function checkScroll(){
+const scrolled=window.scrollY>80;
+navWrapper.classList.toggle('scrolled',scrolled);
+const navbar=document.getElementById('navbar');
+const wrapper=document.getElementById('navInner');
+const wrapperWidth=wrapper.offsetWidth;
+const navWidth=navbar.offsetWidth;
+if(scrolled){
+const centerOffset=(wrapperWidth/2)-(navWidth/2);
+const rightPos=wrapperWidth-navWidth;
+const shift=centerOffset-rightPos;
+navbar.style.transform='translateX('+shift+'px)';
+}else{
+navbar.style.transform='translateX(0)';
+}
+}
+
+window.addEventListener('scroll',()=>{
+checkScroll();
+revealOnScroll();
+},{passive:true});
+
+function revealOnScroll(){
+const reveals=document.querySelectorAll('.page.active .reveal');
+const windowHeight=window.innerHeight;
+reveals.forEach(el=>{
+const top=el.getBoundingClientRect().top;
+if(top<windowHeight*0.88){
+el.classList.add('visible');
+}
+});
+}
+
+function resetRevealElements(page){
+const reveals=page.querySelectorAll('.reveal');
+reveals.forEach(el=>el.classList.remove('visible'));
+setTimeout(()=>revealOnScroll(),100);
+}
+
+function setTheme(theme){
+html.setAttribute('data-theme',theme);
+if(theme==='dark'){
+moonIcon.style.display='block';
+sunIcon.style.display='none';
+}else{
+moonIcon.style.display='none';
+sunIcon.style.display='block';
+}
+localStorage.setItem('theme',theme);
+}
+
+themeToggle.addEventListener('click',()=>{
+const current=html.getAttribute('data-theme');
+setTheme(current==='dark'?'light':'dark');
+});
+
+window.addEventListener('resize',()=>{checkScroll()},{passive:true});
+
+const savedTheme=localStorage.getItem('theme');
+setTheme(savedTheme||'dark');
+
+window.addEventListener('DOMContentLoaded',()=>{
+checkScroll();
+setTimeout(revealOnScroll,500);
+});
+</script>
+</body>
+</html>
